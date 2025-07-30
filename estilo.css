@@ -1,0 +1,46 @@
+.navegacao {
+    /* background-color: red !important; */
+    background: linear-gradient(to right, rgb(17, 26, 70), rgb(2, 131, 229));
+}
+
+.menu {
+    background-color: rgb(17, 26, 70);
+    /*o menu pega toda a altura da tela*/
+    height: 100vh;
+    list-style: none;
+}
+
+.menu-item {
+    color: white;
+    padding: 8px 0px;
+    text-decoration: none;
+    font-size: 22px;
+}
+
+
+.menu-item:hover {
+    color: bisque;
+    scale: 1.05;
+}
+
+.fundoLogin {
+    background-color: rgb(0, 0, 0);
+    display: flex;
+}
+
+.painel {
+    background-color: rgba(255, 255, 255, 0.815);
+    width: 350px;
+    height: 350px;
+    margin: auto;
+    margin-top: 100px;
+    border-radius: 20px;
+    padding: 10px;
+    z-index: 2;
+}
+
+.cabecalho {
+    color: rgb(0, 0, 0);
+    text-align: center;
+    font-size: 40px;
+}
