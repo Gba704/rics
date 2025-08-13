@@ -1,3 +1,8 @@
+<?php
+include './backend/conexao.php';
+include './backend/validacao.php';
+?>
+
 <!DOCTYPE html>
 <html lang="pt-br">
 
@@ -13,9 +18,21 @@
     integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous">
   <link rel="stylesheet" href="https://cdn.datatables.net/2.3.2/css/dataTables.dataTables.css" />
   <link rel="stylesheet" href="estilo.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/notyf/3.5.0/notyf.min.js" integrity="sha512-aHV4XrWccxFPcqcV1MPkCVjKAunNLGJ/18RIeGVIIb70LbqxL3PMQsoC1Bu78CcwTE5lPx1GR2zNw6KX0bXQMw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 </head>
 
 <body>
+
+<?php
+    //se existir uma requisição get ERRO e se ERRO = 1
+    if(isset($_GET['mensagem'])){
+      echo "<script>
+        var notyf = new Notyf();
+        notyf.error('Login e senha invalida ');
+      </script>";
+    }
+    ?>
+
   <nav class="navbar navbar-expand-lg bg-primary navbar-dark navegacao">
     <div class="container-fluid">
       <a class="navbar-brand" href="#"> <i class="fa-solid fa-handshake"></i> R.I.C.S </a>
@@ -48,7 +65,7 @@
         <form class="d-flex" role="search">
           <input class="form-control me-2" type="search" placeholder="Buscar" aria-label="Search" />
           <button class="btn btn-outline-light " type="submit"> <i class="fa-solid fa-magnifying-glass"></i> </button>
-          <a href="#" class="btn btn-outline-light ms-2"> <i class="fa-solid fa-right-from-bracket"></i> </a>
+          <a href="./backend/sair.php" class="btn btn-outline-light ms-2"> <i class="fa-solid fa-right-from-bracket"></i> </a>
         </form>
 
 
@@ -62,6 +79,9 @@
 
       <div class="col-2 menu">
         <ul class="menu">
+          <p style="color:white;">
+            Bem vindo(a) <?php  echo $_SESSION['usuario'];?>
+          </p>
           <li> <a href="#" class="menu-item"> <i class="fa-solid fa-user"></i> Usuário </a> </li>
           <li> <a href="#" class="menu-item"> <i class="fa-solid fa-location-dot"></i> Regiões </a> </li>
           <li> <a href="#" class="menu-item"> <i class="fa-solid fa-house"></i> Cidades </a> </li>
@@ -75,20 +95,26 @@
       <div class="col-5">
         <h1>Cadrasto</h1>
 
-        <form>
+        <form action="./backend/usuario/inserir.php" method="post">
           <div class="mb-3">
-            <label class="form-label">CPF</label>
-            <input type="text" class="form-control cpf">
+            <label class="form-label">NOME</label>
+            <input name="nome" type="text" class="form-control">
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">EMAIL</label>
+            <input name="email" type="email" class="form-control">
+          </div>
 
             <div class="mb-3">
-              <label class="form-label">Email</label>
-              <input type="Email" class="form-control">
+              <label class="form-label">CPF</label>
+              <input name="cpf" type="text" class="form-control cpf">
             </div>
 
             <div class="mb-3">
               <label class="form-label">Senha</label>
               <div class="input-group">
-                <input type="password" class="form-control" id="senha">
+                <input name="senha" type="password" class="form-control" id="senha" autocomplete="new-passwoed">
                 <span onclick="visualizar()" style="cursor: pointer;" class="input-group-text">
                   <i id="olho" class="fa-solid fa-eye"></i>
                 </span>
@@ -99,7 +125,7 @@
         </form>
       </div>
 
-    </div>
+ 
 
     <div class="col-5">
       <h1> Listagem</h1>
@@ -110,28 +136,32 @@
             <th scope="col">Id</th>
             <th scope="col">Nome</th>
             <th scope="col">E-mail</th>
-            <th scope="col">Senha</th>
+            <th scope="col">Senha</th> 
+            <th scope="col">cpf</th>
+            <th scope="col">opcoes</th>
           </tr>
         </thead>
         <tbody>
+          <?php
+          $sql = "SELECT * FROM usuario";
+          //executar o comando
+          $dados = mysqli_query($conexao, $sql);
+          //percorrer todos os registros do banco 
+          while($coluna = mysqli_fetch_assoc($dados)){
+            ?>
+          
           <tr>
-            <th scope="row">1</th>
-            <td>Stênio</td>
-            <td>Stênio@gmail.com</td>
-            <td>123</td>
+            <th scope="row"><?php echo $coluna['id'] ?></th>
+            <td><?php echo $coluna ['nome'] ?></td>
+            <td><?php echo $coluna ['email'] ?></td>
+            <td><?php echo $coluna ['senha'] ?></td>
+            <td><?php echo $coluna ['cpf'] ?></td>
+            <td> 
+                <a href="#"><i class="fa-solid fa-pen-to-square me-3" style="color: blue;"></i></a>  
+                <a href="<?php echo"./backend/usuario/excluir.php?id=".$coluna['id']?>" onclick="return confirm('Deseja realmente excluir?')"><i class="fa-solid fa-trash ms-2" style="color: #ff0000;"></i></a>  
+              </td>
           </tr>
-          <tr>
-            <th scope="row">2</th>
-            <td>Arlindo</td>
-            <td>Arlindo@gmail.com</td>
-            <td>lindo123</td>
-          </tr>
-          <tr>
-            <th scope="row">3</th>
-            <td>Lorena</td>
-            <td>Lorena@gmail.com</td>
-            <td>lolo123</td>
-          </tr>
+            <?php } ?>
         </tbody>
       </table>
     </div>
